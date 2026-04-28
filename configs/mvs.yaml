@@ -55,10 +55,8 @@ max_rectangular_error: 25 # degree
 min_confidence: 0.8
 
 #####-----cboard参数-----#####
-quaternion_canid: 0x01
-bullet_speed_canid: 0x110
-send_canid: 0xff
-can_interface: "can0"
+serial_device: "/dev/ttyACM0"  # 虚拟串口设备路径
+serial_baudrate: 115200         # 波特率
 
 #####-----tracker参数-----#####
 min_detect_count: 5

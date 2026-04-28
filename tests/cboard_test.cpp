@@ -1,4 +1,4 @@
-#include "io/cboard.hpp"
+#include "io/cboard_serial.hpp"
 
 #include <chrono>
 #include <opencv2/opencv.hpp>
@@ -25,7 +25,7 @@ int main(int argc, char * argv[])
 
   tools::Exiter exiter;
 
-  io::CBoard cboard(config_path);
+  io::CBoardSerial cboard(config_path);
 
   while (!exiter.exit()) {
     auto timestamp = std::chrono::steady_clock::now();

@@ -69,10 +69,8 @@ t_camera2gimbal: [0.13895789074180098, 0.066620637390426771, 0.02807965021117073
 
 
 #####-----cboard参数-----#####
-quaternion_canid: 0x100
-bullet_speed_canid: 0x101
-send_canid: 0xff
-can_interface: "can0"
+serial_device: "/dev/ttyACM0"  # 虚拟串口设备路径
+serial_baudrate: 115200         # 波特率
 
 #####-----gimbal参数-----#####
 com_port: "/dev/gimbal"
