@@ -9,10 +9,12 @@
 #include <string>
 #include <vector>
 
+#include "io/cboard.hpp"
 #include "io/command.hpp"
 #include "io/virtual_serial.hpp"
 #include "tools/logger.hpp"
 #include "tools/thread_safe_queue.hpp"
+#include "tools/yaml.hpp"
 
 namespace io
 {
@@ -23,25 +25,6 @@ enum MessageID : uint8_t
   MSG_ID_STM32_STATUS = 0x01,      // STM32状态数据（批量上传）
   MSG_ID_VISION_COMMAND = 0x02     // 视觉控制命令（批量下发）
 };
-
-enum Mode
-{
-  idle,
-  auto_aim,
-  small_buff,
-  big_buff,
-  outpost
-};
-const std::vector<std::string> MODES = {"idle", "auto_aim", "small_buff", "big_buff", "outpost"};
-
-// 哨兵专有
-enum ShootMode
-{
-  left_shoot,
-  right_shoot,
-  both_shoot
-};
-const std::vector<std::string> SHOOT_MODES = {"left_shoot", "right_shoot", "both_shoot"};
 
 /**
  * @brief 基于虚拟串口的 CBoard 类

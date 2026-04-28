@@ -1,101 +1,164 @@
+# 敌方颜色: red=红色方, blue=蓝色方 （与比赛阵营对应）
 enemy_color: "red"
 # enemy_color: "blue"
 
 #####-----神经网络参数-----#####
+# YOLO 模型选择: yolov5 / yolov8 / yolo11
 yolo_name: yolov5
+# 装甲板分类模型路径（区分装甲板编号）
 classify_model: assets/tiny_resnet.onnx
+# YOLO11 OpenVINO 模型文件路径
 yolo11_model_path: assets/yolo11.xml
+# YOLOv8 OpenVINO 模型文件路径
 yolov8_model_path: assets/yolov8.xml
+# YOLOv5 OpenVINO 模型文件路径
 yolov5_model_path: assets/yolov5.xml
+# 推理设备: CPU / GPU （OpenVINO 后端）
 device: GPU
+# YOLO 检测最低置信度阈值，低于此值的检测结果被丢弃
 min_confidence: 0.8
+# 是否使用传统视觉方法（true=传统方法, false=YOLO）
 use_traditional: true
 
-#####-----ROI-----#####
-roi: 
-  x: 420
-  y: 50
-  width: 600
-  height: 600
-
+#####-----ROI 感兴趣区域-----#####
+# 图像裁剪区域，只处理该区域内的图像，用于排除画面边缘干扰
+roi:
+  x: 420      # 左上角 x 坐标
+  y: 50       # 左上角 y 坐标
+  width: 600  # 区域宽度
+  height: 600 # 区域高度
+# 是否启用 ROI 裁剪
 use_roi: false
 
 #####-----传统方法参数-----#####
+# 二值化阈值，用于灯条提取（0~255），越大提取的灯条越少
 threshold: 150
-max_angle_error: 45 # degree
+# 灯条允许的最大倾斜角度（度），超出此角度的灯条被丢弃
+max_angle_error: 45 # 度
+# 灯条长宽比下限，用于排除过扁的轮廓
 min_lightbar_ratio: 1.5
+# 灯条长宽比上限，用于排除过长的轮廓
 max_lightbar_ratio: 20
+# 灯条最小像素长度，小于此值的灯条被丢弃
 min_lightbar_length: 8
+# 装甲板（两个灯条组成的矩形）长宽比下限
 min_armor_ratio: 1
+# 装甲板长宽比上限
 max_armor_ratio: 5
+# 装甲板两侧灯条长度比的最大允许偏差，用于排除误匹配
 max_side_ratio: 1.5
-max_rectangular_error: 25 # degree
+# 装甲板矩形最大角度误差（度），超出此值的矩形被丢弃
+max_rectangular_error: 25 # 度
 
-#####-----tracker参数-----#####
+#####-----tracker 追踪器参数-----#####
+# 连续检测到目标的帧数阈值，达到后状态从 lost 切换为 tracking
 min_detect_count: 5
+# 最大临时丢失帧数（普通装甲板），超过后状态切换为 lost
 max_temp_lost_count: 15
+# 前哨站最大临时丢失帧数，前哨站运动慢所以允许更长的丢失容忍
 outpost_max_temp_lost_count: 75
 
-#####-----aimer参数-----#####
-yaw_offset: 2 # degree -2.5
-pitch_offset: 6.5 # degree 2
-comming_angle: 55 # degree
-leaving_angle: 20 # degree
-decision_speed: 7 # rad/s
-high_speed_delay_time: 0.0 # s
-low_speed_delay_time: 0.0 # s planner use this value
+#####-----aimer 瞄准器参数-----#####
+# yaw 轴瞄准偏移补偿（度），正值向右补偿
+yaw_offset: 2
+# pitch 轴瞄准偏移补偿（度），正值向下补偿
+pitch_offset: 6.5
+# 进场角度阈值（度），目标 yaw 角小于此值判定为"正在进入视野"
+comming_angle: 55
+# 离场角度阈值（度），目标 yaw 角大于此值判定为"正在离开视野"
+leaving_angle: 20
+# 弹丸速度阈值（rad/s），高于此值用高速延时，低于用低速延时，用于弹道计算
+decision_speed: 7
+# 高速弹丸发射延时（秒），从指令发出到弹丸出膛的延迟
+high_speed_delay_time: 0.0
+# 低速弹丸发射延时（秒），planner 使用此值
+low_speed_delay_time: 0.0
 
-#####-----shooter参数-----#####
-first_tolerance: 3 # 近距离射击容差，degree
-second_tolerance: 2 # 远距离射击容差，degree
-judge_distance: 2 #距离判断阈值
-auto_fire: true # 是否由自瞄控制射击
+#####-----shooter 射击器参数-----#####
+# 近距离射击容差（度），yaw/pitch 误差小于此值且距离 < judge_distance 时允许射击
+first_tolerance: 3
+# 远距离射击容差（度），yaw/pitch 误差小于此值且距离 >= judge_distance 时允许射击
+second_tolerance: 2
+# 远近分界距离（米），小于此值为近距离，大于为远距离
+judge_distance: 2
+# 是否由自瞄自动控制射击（true=自动开枪, false=手动控制）
+auto_fire: true
 
+#####-----相机参数-----#####
+# 相机类型名称: hikrobot=海康机器人相机, mindvision=迈德威视相机
 camera_name: "hikrobot"
+# 曝光时间（毫秒），值越小画面越暗但拖影越少
 exposure_ms: 2.5
+# 模拟增益，值越大画面越亮但噪点越多
 gain: 16.9
+# USB 相机 vid:pid 标识符，用于多相机时区分设备
 vid_pid: "2bdf:0001"
 
+#####-----坐标系外参-----#####
+# 原始值（单位矩阵=无旋转）
 #  1  0  0
 #  0  1  0
 #  0  0  1
+# IMU 本体坐标系到云台坐标系的旋转矩阵（3×3 行主序），IMU 姿态数据转换到云台坐标系
 R_gimbal2imubody: [1, 0, 0, 0, 1, 0, 0, 0, 1]
 
-# 重投影误差: 0.1820px
+#####-----相机内参-----#####
+# 标定重投影误差: 0.1820px
+# 相机内参矩阵（3×3 行主序）: fx, 0, cx, 0, fy, cy, 0, 0, 1
+# fx/fy=焦距(像素), cx/cy=光心坐标(像素)，用于 PnP 解算装甲板三维位置
 camera_matrix: [1785.4881526822305, 0, 672.4806478241826, 0, 1785.026019470562, 559.89603224794314, 0, 0, 1]
+# 畸变系数 [k1, k2, p1, p2, k3]，用于校正镜头畸变
 distort_coeffs: [-0.076005079619881746, 0.11182817466388446, 0.0005362204787722057, -0.0027546300984895122, 0]
 
-# 相机同理想情况的偏角: yaw1.44 pitch-7.28 roll0.96 degree
+#####-----相机外参（相机→云台）-----#####
+# 标定结果: 相机相对理想方向的偏角 yaw=1.44° pitch=-7.28° roll=0.96°
 # 标定板到世界坐标系原点的水平距离: 1.13 m
-# 标定板同竖直摆放时的偏角: yaw7.61 pitch13.92 roll-0.46 degree
+# 标定板相对竖直方向的偏角: yaw=7.61° pitch=13.92° roll=-0.46°
+# 相机坐标系到云台坐标系的旋转矩阵（3×3 行主序），将相机下目标坐标转换到云台坐标系
 R_camera2gimbal: [-0.027182119030230909, -0.12616154330853446, 0.99163723074269183, -0.99949106557517331, 0.019998323121329122, -0.024853106601381177, -0.016695575474690555, -0.99180811252093692, -0.12664093215554434]
+# 相机坐标系到云台坐标系的平移向量（米）[x, y, z]，相机在云台坐标系下的位置偏移
 t_camera2gimbal: [0.13160669975045827, 0.10377721766577375, 0.024908271912914642]
 
-#####-----cboard参数-----#####
-serial_device: "/dev/ttyACM0"  # 虚拟串口设备路径
-serial_baudrate: 115200         # 波特率
+#####-----cboard 下位机通信参数-----#####
+# 串口设备路径（同下位机通信的虚拟串口）
+serial_device: "/dev/ttyACM0"
+# 串口波特率（需同下位机一致）
+serial_baudrate: 115200
 
-#####-----gimbal参数-----#####
+#####-----gimbal 云台参数-----#####
+# 云台串口设备路径（直接控制云台电机时使用）
 com_port: "/dev/gimbal"
+# yaw 轴 PID 比例系数（0=由下位机自行控制）
 yaw_kp: 0
+# yaw 轴 PID 微分系数
 yaw_kd: 0
+# pitch 轴 PID 比例系数
 pitch_kp: 0
+# pitch 轴 PID 微分系数
 pitch_kd: 0
 
-#####-----planner-----#####
+#####-----planner 轨迹规划器参数-----#####
+# 射击阈值，NIS 残差小于此值时允许开火
 fire_thresh: 0.0035
-
+# yaw 轴最大角加速度（度/s²），用于轨迹预测的物理约束
 max_yaw_acc: 50
+# yaw 轴过程噪声协方差矩阵 [Q_pos, Q_vel]（卡尔曼滤波预测噪声）
 Q_yaw: [9e6, 0]
+# yaw 轴观测噪声协方差矩阵 [R]（卡尔曼滤波观测噪声）
 R_yaw: [1]
-
+# pitch 轴最大角加速度（度/s²）
 max_pitch_acc: 100
+# pitch 轴过程噪声协方差矩阵
 Q_pitch: [9e6, 0]
+# pitch 轴观测噪声协方差矩阵
 R_pitch: [1]
 
-#####-----buff_detector参数-----#####
+#####-----buff_detector 能量机关检测参数-----#####
+# 能量机关 YOLO 检测模型路径（OpenVINO 格式）
 model: "assets/yolo11_buff_int8.xml"
 
-#####-----buff_aimer参数-----#####
-fire_gap_time: 0.700   # s
-predict_time: 0.120     # s
+#####-----buff_aimer 能量机关瞄准参数-----#####
+# 两次开火指令的间隔时间（秒）
+fire_gap_time: 0.700
+# 弹丸飞行预测时间（秒），用于计算提前量
+predict_time: 0.120
