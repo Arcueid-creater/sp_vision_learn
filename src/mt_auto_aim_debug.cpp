@@ -153,12 +153,26 @@ int main(int argc, char * argv[])
       data["nees_fail"] = target.ekf().data.at("nees_fail");
       data["recent_nis_failures"] = target.ekf().data.at("recent_nis_failures");
     }
-
+    data["raw_qw"] = q.w();
+data["raw_qx"] = q.x();
+data["raw_qy"] = q.y();
+data["raw_qz"] = q.z();
+// 原始欧拉角(度)
+data["raw_yaw"] = ypr[0] * 57.3;
+data["raw_pitch"] = ypr[1] * 57.3;
+data["raw_roll"] = ypr[2] * 57.3;
+// 弹速和模式
+data["raw_bullet_speed"] = cboard.bullet_speed;
+data["raw_mode"] = static_cast<int>(cboard.mode);
     // 云台响应情况
     data["gimbal_yaw"] = ypr[0] * 57.3;
     data["gimbal_pitch"] = ypr[1] * 57.3;
     data["bullet_speed"] = cboard.bullet_speed;
-
+    static auto last_t = std::chrono::steady_clock::now();
+    auto now = std::chrono::steady_clock::now();
+    double fps = 1.0 / tools::delta_time(now, last_t);
+    tools::logger()->info("FPS: {:.1f}", fps);
+    last_t = now;
     plotter.plot(data);
 
     cv::resize(img, img, {}, 0.5, 0.5);  // 显示时缩小图片尺寸

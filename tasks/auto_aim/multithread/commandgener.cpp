@@ -41,8 +41,11 @@ void CommandGener::generate_command()
     std::optional<Input> input;
     {
       std::lock_guard<std::mutex> lock(mtx_);
-      if (latest_ && tools::delta_time(std::chrono::steady_clock::now(), latest_->t) < 0.2) {
+      if (
+        latest_ && tools::delta_time(std::chrono::steady_clock::now(), latest_->t) < 0.2 &&
+        latest_->t != last_processed_t_) {
         input = latest_;
+        last_processed_t_ = latest_->t;
       } else
         input = std::nullopt;
     }

@@ -14,7 +14,7 @@ yolov8_model_path: assets/yolov8.xml
 # YOLOv5 OpenVINO 模型文件路径
 yolov5_model_path: assets/yolov5.xml
 # 推理设备: CPU / GPU （OpenVINO 后端）
-device: GPU
+device: CPU
 # YOLO 检测最低置信度阈值，低于此值的检测结果被丢弃
 min_confidence: 0.8
 # 是否使用传统视觉方法（true=传统方法, false=YOLO）
@@ -121,13 +121,13 @@ t_camera2gimbal: [0.13160669975045827, 0.10377721766577375, 0.024908271912914642
 
 #####-----cboard 下位机通信参数-----#####
 # 串口设备路径（同下位机通信的虚拟串口）
-serial_device: "/dev/ttyACM0"
+serial_device: "/dev/stm32h7"
 # 串口波特率（需同下位机一致）
-serial_baudrate: 115200
+serial_baudrate: 921600
 
 #####-----gimbal 云台参数-----#####
 # 云台串口设备路径（直接控制云台电机时使用）
-com_port: "/dev/gimbal"
+com_port: "/dev/ttyACM0"
 # yaw 轴 PID 比例系数（0=由下位机自行控制）
 yaw_kp: 0
 # yaw 轴 PID 微分系数
